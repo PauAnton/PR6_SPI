@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PR6_SPI_SD.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="practica-6-bus-spi-lector-tarjetas-sd">PRACTICA 6: BUS SPI. LECTOR TARJETAS SD</h1>
+<h2 id="ejercicio-1-lecturaescritura-de-archivo">Ejercicio 1: Lectura/Escritura de archivo</h2>
+<p>El siguiente codigo emplea la escritura y lectura de una trajeta SD.</p>
+<p>Debemos incluir las librerías SPI y SD para ello.
+Tambien declaramos la variable myFile de tipo File para poder manipular archivos.</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SPI.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SD.h&gt;</span></span>
+
+File myFile;
+</div></code></pre>
+<p>En el <em>setup()</em> debemos indicar los pines de conexión para el bus SPI.</p>
+<p>Hecho comporobamos la connexion con la tarjeta. Para ello pasamos por parametro el pin asignado a los datos (CS) y si esta connexión no se realizó enviamos al puerto serie un mensaje de error.<br>
+Si es exitosa se procede y da los mensajes de confirmación.</p>
+<p>Tras esto, procedemos a abrir el ficher con nombre <em>archivo.txt</em>. En caso de que no exista el fichero, el parámetro <em>FILE_WRITE</em> permite que se cree el archivo y se abra immediatamente.</p>
+<p>Escribimos algo en el fichero y lo cerramos.</p>
+<p>Si el fichero que quisimos crear SÍ se creó correctamente entonces leemos el contenido y se envía este por el puerto serie.
+Si no se pudo crear, enviamos un mensaje de error.</p>
+<pre class="hljs"><code><div>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span></span>{
+
+Serial.begin(<span class="hljs-number">9600</span>);
+Serial.print(<span class="hljs-string">"Iniciando SD ..."</span>);
+
+ SPI.begin(<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">23</span>,<span class="hljs-number">4</span>);
+
+<span class="hljs-keyword">if</span>(! SD.begin(<span class="hljs-number">4</span>)){
+  Serial.println(<span class="hljs-string">"No se pudo inicializar"</span>);
+  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+    }
+    
+  Serial.println(<span class="hljs-string">"SD OK"</span>);
+  
+Serial.println(<span class="hljs-string">"inicializacion exitosa"</span>);
+
+  <span class="hljs-comment">//Escribimos en el fichero</span>
+  myFile=SD.open(<span class="hljs-string">"/archivo.txt"</span>,FILE_WRITE); <span class="hljs-comment">// FILE_WIRTE: si no existe el archivo, lo crea. </span>
+  <span class="hljs-comment">// SD.remove("/archivo.txt");</span>
+  <span class="hljs-comment">// myFile=SD.open("/archivo.txt");</span>
+  myFile.println(<span class="hljs-string">"Me estoy comunicando con SD"</span>);
+  myFile.println(<span class="hljs-string">"Doble entrada"</span>);
+  myFile.close();
+
+  myFile=SD.open(<span class="hljs-string">"/archivo.txt"</span>); <span class="hljs-comment">//Abrimos, mostramos y leemos</span>
+  <span class="hljs-keyword">if</span> (myFile) {
+    Serial.println(<span class="hljs-string">"archivo.txt:"</span>);
+    <span class="hljs-keyword">while</span> (myFile.available()) {
+    String line=myFile.readStringUntil(<span class="hljs-string">'\n'</span>);
+    Serial.println(line);
+    }
+    myFile.close(); 
+  }
+  
+  <span class="hljs-keyword">else</span> {
+    Serial.println(<span class="hljs-string">"Error al abrir el archivo"</span>);
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span>{}
+</div></code></pre>
+<p>Así pues por el puerto serie deberíamos ver lo siguiente:</p>
+<pre class="hljs"><code><div>Iniciando SD ...sd init ok
+SD OK
+inicializacion exitosa
+Me estoy comunicando con SD
+Doble entrada
+</div></code></pre>
+<hr>
+<p>Este programa es un simple ejemplo de como usar el lector de tarjetas.</p>
+<p>El lector de tarjetas puede ser útil sobretodo para almacenar datos si no tenemos una memoria RAM en nuestro microprocesador.</p>
+<p>Como NO TENGO EL LECTOR RFID voy a utilizar el lector de tarjetas para otra aplicacion (tampoco puedo realizar EJERCICIO PRACTICO 2)</p>
+<hr>
+<h2 id="salvado-de-configuracion-predeterminada-ejercicio-practico-subida-de-nota">SALVADO DE CONFIGURACION PREDETERMINADA. Ejercicio practico subida de nota</h2>
+<p><img src="montaje.jpeg" alt=""></p>
+<p>En este ejercicio utilizaremos la tarjeta SD para guardar en un fichero los ajustes predeterminados, en este caso de la pantalla LCD I2C.</p>
+<h3 id="requisitos"><strong>Requisitos</strong></h3>
+<ol>
+<li>Para seguir adelante con esta practica, primero se debe crear el fichero <em>config.txt</em>. Ejecutar el siguiente codigo.</li>
+</ol>
+<p>Para cambiar algun parametro de la configuración cambia los valores de los <em>myfile.println()</em>.</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SPI.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SD.h&gt;</span></span>
+
+File myFile;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span></span>{
+
+Serial.begin(<span class="hljs-number">9600</span>);
+Serial.print(<span class="hljs-string">"Iniciando SD ..."</span>);
+
+ SPI.begin(<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">23</span>,<span class="hljs-number">4</span>);
+
+<span class="hljs-keyword">if</span>(! SD.begin(<span class="hljs-number">4</span>)){
+  Serial.println(<span class="hljs-string">"No se pudo inicializar"</span>);
+  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+    }
+    
+  Serial.println(<span class="hljs-string">"SD OK"</span>);
+  
+Serial.println(<span class="hljs-string">"inicializacion exitosa"</span>);
+
+  <span class="hljs-comment">//Escribimos en el fichero</span>
+  myFile=SD.open(<span class="hljs-string">"/config.txt"</span>,FILE_WRITE); <span class="hljs-comment">// FILE_WIRTE: si no existe el archivo, lo crea. </span>
+  <span class="hljs-comment">// SD.remove("/archivo.txt");</span>
+  <span class="hljs-comment">// myFile=SD.open("/archivo.txt");</span>
+  myFile.println(<span class="hljs-string">"ANCHO"</span>);
+  myFile.println(<span class="hljs-string">"128"</span>);
+  myFile.println(<span class="hljs-string">"ALTO"</span>);
+  myFile.println(<span class="hljs-string">"64"</span>);
+  myFile.println(<span class="hljs-string">"TAMAÑO"</span>);
+  myFile.println(<span class="hljs-string">"1"</span>);
+  myFile.println(<span class="hljs-string">"X"</span>);
+  myFile.println(<span class="hljs-string">"0"</span>);
+  myFile.println(<span class="hljs-string">"Y"</span>);
+  myFile.println(<span class="hljs-string">"16"</span>);
+  myFile.close();
+
+  myFile=SD.open(<span class="hljs-string">"/config.txt"</span>); <span class="hljs-comment">//Abrimos, mostramos y leemos</span>
+  <span class="hljs-keyword">if</span> (myFile) {
+    Serial.println(<span class="hljs-string">"config.txt:"</span>);
+    <span class="hljs-keyword">while</span> (myFile.available()) {
+    String line=myFile.readStringUntil(<span class="hljs-string">'\n'</span>);
+    Serial.println(line);
+    }
+    myFile.close(); 
+  }
+  
+  <span class="hljs-keyword">else</span> {
+    Serial.println(<span class="hljs-string">"Error al abrir el archivo"</span>);
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span>{}
+
+</div></code></pre>
+<ol start="2">
+<li>Una vez hechoe el paso 1, añadir la siguiente dependencia de librerías en el fichero <em>platformi.ini</em></li>
+</ol>
+<pre class="hljs"><code><div>lib_deps = 
+	adafruit/Adafruit SSD1306@^2.4.4
+	adafruit/Adafruit GFX Library@^1.10.7
+	adafruit/Adafruit BusIO@^1.7.3
+    
+</div></code></pre>
+<h3 id="desenvolupamento"><strong>Desenvolupamento</strong></h3>
+<ul>
+<li>Cabezera
+Vamos a introducir las librerías necesarias para trabajar con el lectro SD de bus SPI y la pantalla LCD.</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SPI.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SD.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Wire.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Adafruit_GFX.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Adafruit_SSD1306.h&gt;</span></span>
+
+</div></code></pre>
+<ul>
+<li>Preambulo</li>
+</ul>
+<p>Para hacer el codigo principal mas reducido creamos dos funciones:</p>
+<ul>
+<li><em>inicicarSD()</em>
+Tal y como su nombre indica inicializa la connexion con la tarjeta SD a través del bus SPI.</li>
+</ul>
+<pre class="hljs"><code><div>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">iniciarSD</span><span class="hljs-params">()</span></span>{
+
+Serial.print(<span class="hljs-string">"Iniciando SD ..."</span>);
+SPI.begin(<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">23</span>,<span class="hljs-number">4</span>);
+
+<span class="hljs-keyword">if</span>(! SD.begin(<span class="hljs-number">4</span>)){
+  Serial.println(<span class="hljs-string">"No se pudo inicializar"</span>);
+  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+    }    
+  Serial.println(<span class="hljs-string">"SD OK"</span>);
+  Serial.println(<span class="hljs-string">"inicializacion exitosa"</span>);
+
+}
+</div></code></pre>
+<ul>
+<li><em>getconfig()</em>
+En esta funcion pide 5 parámetros donde grava los diferentes parametros predeterminados ya configurados.
+Estas variables son devueltas al programa.</li>
+</ul>
+<p>Sabiendo el orden de la configuracion, usamos una linea auxiliar para leer la descripcion del parametro y el string line para los datos. Entonces convertimos el string con el dado deseado a un entero.</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getconfig</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp; ancho, <span class="hljs-keyword">int</span> &amp; alto, <span class="hljs-keyword">int</span> &amp; size, <span class="hljs-keyword">int</span> &amp; x, <span class="hljs-keyword">int</span> &amp; y)</span></span>{
+    File config;
+
+  config=SD.open(<span class="hljs-string">"/config.txt"</span>);
+  
+  <span class="hljs-keyword">if</span>(config){
+      
+      String line, lineaux;
+          
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          ancho=line.toInt();
+     
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          alto=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+         size=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          x=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          y=line.toInt();
+
+     config.close();}      
+
+  <span class="hljs-keyword">else</span> {Serial.println(<span class="hljs-string">"Archivo config.txt no encontrado"</span>);}
+}
+</div></code></pre>
+<ul>
+<li>Setup</li>
+</ul>
+<p>Aqúi utilizamos las dos funciones anteriores para conseguir los parametros de configuracion.</p>
+<p>Tras esto iniciamos la delaracion del display. Usamos los parametros obtenidos para hacer tal declaracion.</p>
+<p>Una vez hecha, limpiamos el display y imprimimos por pantalla (display) el mensaje de que la operacion se hizo correctamente y se resetea de nuevo preparado para ser usado.</p>
+<pre class="hljs"><code><div>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span></span>{
+
+Serial.begin(<span class="hljs-number">9600</span>);
+
+iniciarSD();
+
+<span class="hljs-keyword">int</span> ancho, alto, size, x, y;
+String color;
+
+getconfig(ancho,alto,size,x,y);
+
+<span class="hljs-comment">// Objeto de la clase Adafruit_SSD1306</span>
+<span class="hljs-function">Adafruit_SSD1306 <span class="hljs-title">display</span><span class="hljs-params">(ancho, alto, &amp;Wire, <span class="hljs-number">-1</span>)</span></span>;
+
+<span class="hljs-comment">// Iniciar pantalla OLED en la dirección 0x3C</span>
+  <span class="hljs-keyword">if</span> (!display.begin(SSD1306_SWITCHCAPVCC, <span class="hljs-number">0x3C</span>)) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __DEBUG__</span>
+    Serial.println(<span class="hljs-string">"No se encuentra la pantalla OLED"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>);
+  }
+
+  <span class="hljs-comment">// Limpiar buffer</span>
+  display.clearDisplay();
+
+
+  display.setTextSize(size);
+  <span class="hljs-comment">// Color del texto</span>
+  display.setTextColor(SSD1306_WHITE);
+  <span class="hljs-comment">// Posición del texto</span>
+  display.setCursor(x, y);
+  display.println(<span class="hljs-string">"Valores predeterminados establecidos."</span>);
+  <span class="hljs-comment">// Enviar a pantalla</span>
+  display.display();
+  delay(<span class="hljs-number">5</span>);
+  display.clearDisplay();
+ 
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span>{}
+</div></code></pre>
+<h3 id="codigo-final"><strong>Codigo final</strong></h3>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SPI.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;SD.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Wire.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Adafruit_GFX.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Adafruit_SSD1306.h&gt;</span></span>
+
+
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">iniciarSD</span><span class="hljs-params">()</span></span>{
+
+Serial.print(<span class="hljs-string">"Iniciando SD ..."</span>);
+SPI.begin(<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">23</span>,<span class="hljs-number">4</span>);
+
+<span class="hljs-keyword">if</span>(! SD.begin(<span class="hljs-number">4</span>)){
+  Serial.println(<span class="hljs-string">"No se pudo inicializar"</span>);
+  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+    }    
+  Serial.println(<span class="hljs-string">"SD OK"</span>);
+  Serial.println(<span class="hljs-string">"inicializacion exitosa"</span>);
+
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getconfig</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp; ancho, <span class="hljs-keyword">int</span> &amp; alto, <span class="hljs-keyword">int</span> &amp; size, <span class="hljs-keyword">int</span> &amp; x, <span class="hljs-keyword">int</span> &amp; y)</span></span>{
+    File config;
+
+  config=SD.open(<span class="hljs-string">"/config.txt"</span>);
+  
+  <span class="hljs-keyword">if</span>(config){
+      
+      String line, lineaux;
+          
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          ancho=line.toInt();
+     
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          alto=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+         size=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          x=line.toInt();
+
+      lineaux=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          line=config.readStringUntil(<span class="hljs-string">'\n'</span>);
+          y=line.toInt();
+
+     config.close();}      
+
+  <span class="hljs-keyword">else</span> {Serial.println(<span class="hljs-string">"Archivo config.txt no encontrado"</span>);}
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span></span>{
+
+Serial.begin(<span class="hljs-number">9600</span>);
+
+iniciarSD();
+
+<span class="hljs-keyword">int</span> ancho, alto, size, x, y;
+String color;
+
+getconfig(ancho,alto,size,x,y);
+
+<span class="hljs-comment">// Objeto de la clase Adafruit_SSD1306</span>
+<span class="hljs-function">Adafruit_SSD1306 <span class="hljs-title">display</span><span class="hljs-params">(ancho, alto, &amp;Wire, <span class="hljs-number">-1</span>)</span></span>;
+
+<span class="hljs-comment">// Iniciar pantalla OLED en la dirección 0x3C</span>
+  <span class="hljs-keyword">if</span> (!display.begin(SSD1306_SWITCHCAPVCC, <span class="hljs-number">0x3C</span>)) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __DEBUG__</span>
+    Serial.println(<span class="hljs-string">"No se encuentra la pantalla OLED"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>);
+  }
+
+  <span class="hljs-comment">// Limpiar buffer</span>
+  display.clearDisplay();
+
+
+  display.setTextSize(size);
+  <span class="hljs-comment">// Color del texto</span>
+  display.setTextColor(SSD1306_WHITE);
+  <span class="hljs-comment">// Posición del texto</span>
+  display.setCursor(x, y);
+  display.println(<span class="hljs-string">"Valores predeterminados establecidos."</span>);
+  <span class="hljs-comment">// Enviar a pantalla</span>
+  display.display();
+  delay(<span class="hljs-number">5000</span>);
+  display.clearDisplay();
+ 
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span>{}
+</div></code></pre>
+
+</body>
+</html>
